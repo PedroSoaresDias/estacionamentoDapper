@@ -56,7 +56,7 @@ public class RepositorioDapper<T> : IRepositorio<T>
         .Where(p => !Attribute.IsDefined(p, typeof(IgnoreInDapperAttribute)));
         var nomesCampos = propriedades.Select(p => {
             var colunaName = p.GetCustomAttribute<ColumnAttribute>()?.Name;
-            return colunaName ?? p.Name;
+            return $"{colunaName ?? p.Name}";
         });
         return string.Join(", ", nomesCampos);
     }
@@ -66,10 +66,7 @@ public class RepositorioDapper<T> : IRepositorio<T>
         var tipo = typeof(T);
         var propriedades = tipo.GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(p => !Attribute.IsDefined(p, typeof(IgnoreInDapperAttribute)));
-        var nomesValores = propriedades.Select(p => {
-            var colunaName = p.GetCustomAttribute<ColumnAttribute>()?.Name;
-            return colunaName ?? p.Name;
-        });
+        var nomesValores = propriedades.Select(p => $"@{p.Name}");
         return string.Join(", ", nomesValores);
     }
 
