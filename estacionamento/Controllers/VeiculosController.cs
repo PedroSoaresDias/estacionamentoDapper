@@ -10,16 +10,27 @@ namespace estacionamentoDapper.Controllers;
 [Route("/veiculos")]
 public class VeiculosController : Controller
 {
+
+    private readonly IDbConnection _connection;
     private readonly IRepositorio<Veiculo> _repo;
 
-    public VeiculosController(IRepositorio<Veiculo> repo)
+    public VeiculosController(IRepositorio<Veiculo> repo, IDbConnection connection)
     {
         _repo = repo;
+        _connection = connection;
     }
 
     public IActionResult Index()
     {
-        var veiculos = _repo.ObterTodos();
+        var sql = """"
+            SELECT v.*, c.* FROM veiculos v
+            INNER JOIN clientes c ON c.id = v.clienteId
+        """";
+
+        var veiculos = _connection.Query<Veiculo, Cliente, Veiculo>(sql, (veiculo, cliente) => {
+            veiculo.Cliente = cliente;
+            return veiculo;
+        }, splitOn: "Id");
         return View(veiculos);
     }
 
@@ -58,6 +69,6 @@ public class VeiculosController : Controller
         veiculo.Id = id;
         _repo.Atualizar(veiculo);
 
-        return Redirect("/vagas");
+        return Redirect("/veiculos");
     }
 }
