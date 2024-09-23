@@ -14,11 +14,12 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Entrada</th>
-                <th>Saída</th>
-                <th>Valor</th>
-                <th>Id do Veiculo</th>
-                <th>Id da Vaga</th>
+                <th>Nome do cliente</th>
+                <th>Placa do carro</th>
+                <th>Marca do carro</th>
+                <th>Modelo do carro</th>
+                <th>Horário Entrada</th>
+                <th>Local</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -27,16 +28,12 @@
             @foreach(var item in Model){
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.DataEntrada</td>
-                    <td>@item.DataSaida</td>
-                    <td>@item.Valor.ToString("C", new System.Globalization.CultureInfo("pt-BR"))</td>
-                    <td>@item.VeiculoId</td>
-                    <td>@item.VagaId</td>
-                    <td>
-                        <a class="btn btn-warning" asp-route-id="@item.Id" asp-action="Editar" asp-controller="Tickets">
-                            Alterar
-                        </a>
-                    </td>
+                    <td>@item.Veiculo.Cliente.Nome</td>
+                    <td>@item.Veiculo.Placa</td>
+                    <td>@item.Veiculo.Marca</td>
+                    <td>@item.Veiculo.Modelo</td>
+                    <td>@item.DataEntrada.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.Vaga.CodigoLocalizacao</td>
                     <td>
                         <form onsubmit="return confirm('Confirma?')" asp-route-id="@item.Id" asp-action="Apagar" asp-controller="Tickets" method="post">
                             <button type="submit" class="btn btn-danger">Excluír</button>

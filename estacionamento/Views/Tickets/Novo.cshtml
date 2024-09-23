@@ -1,22 +1,40 @@
-@model estacionamentoDapper.Models.Cliente;
+@model estacionamentoDapper.Models.Ticket;
 
 @{
-    ViewData["Title"] = "Incluir Cliente";
+    ViewData["Title"] = "Incluir Ticket";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Novo Cliente</h1>
+    <h1 class="display-4">Novo ticket</h1>
 </div>
 
 <div class="text-left">
-    <form asp-action="Criar" asp-controller="Clientes" method="post">
+    <form asp-action="Criar" asp-controller="Tickets" method="post">
         <div class="form-group">
-            <label for="Nome">Nome</label>
-            <input type="text" class="form-control" id="Nome" asp-for="Nome" required>
+            <label for="Nome">Nome do cliente</label>
+            <input type="text" class="form-control" id="Nome" name="Nome" required>
         </div>
         <div class="form-group">
-            <label for="Cpf">CPF</label>
-            <input type="text" class="form-control" id="Cpf" asp-for="Cpf" required>
+            <label for="Nome">CPF do cliente</label>
+            <input type="text" class="form-control" id="Cpf" name="Cpf">
+        </div>
+        <div class="form-group">
+            <label for="Nome">Placa do veiculo</label>
+            <input type="text" class="form-control" id="Placa" name="Placa" required>
+        </div>
+        <div class="form-group">
+            <label for="Nome">Modelo do veiculo</label>
+            <input type="text" class="form-control" id="Modelo" name="Modelo" required>
+        </div>
+        <div class="form-group">
+            <label for="Nome">Marca do veiculo</label>
+            <input type="text" class="form-control" id="Marca" name="Marca" required>
+        </div>
+        <div class="form-group">
+            <label for="Nome">Vaga</label>
+            <select name="VagaId" asp-items="ViewBag.Vagas" class="form-control" required>
+                <option value="">[Selecione uma vaga]</option>
+            </select>
         </div>
         <br>
         <button type="submit" class="btn btn-primary">Salvar</button>

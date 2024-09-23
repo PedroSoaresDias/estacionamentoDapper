@@ -15,4 +15,6 @@ public class Ticket
     [IgnoreInDapper]
     public Veiculo Veiculo { get; set; } = default!;
     public int VagaId { get; set; } = default!;
+    [IgnoreInDapper]
+    public Vaga Vaga { get; set; } = default!;
 }
