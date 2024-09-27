@@ -28,6 +28,7 @@ public class TicketsController : Controller
             INNER JOIN veiculos v ON v.id = t.veiculoId
             INNER JOIN clientes c ON c.id = v.clienteId
             INNER JOIN vagas vg ON vg.id = t.vagaId
+            ORDER BY t.id DESC
         """";
 
         var tickets = _connection.Query<Ticket, Veiculo, Cliente, Vaga, Ticket>(sql, (ticket, veiculo, cliente, vaga) =>
@@ -37,6 +38,9 @@ public class TicketsController : Controller
             ticket.Vaga = vaga;
             return ticket;
         }, splitOn: "Id, Id, Id");
+
+        ViewBag.ValorDoMinuto = _connection.QueryFirstOrDefault<ValorDoMinuto>("SELECT * FROM valores ORDER BY id DESC LIMIT 1");
+
         return View(tickets);
     }
 
@@ -72,6 +76,37 @@ public class TicketsController : Controller
         var ticket = _repo.ObterPorId(id);
         alterarStatusVaga(ticket.VagaId, false);
         _repo.Excluir(id);
+        return Redirect("/tickets");
+    }
+
+    [HttpPost("{id}/pago")]
+    public IActionResult Pago([FromRoute] int id)
+    {
+        var sql = """"
+            SELECT t.*, v.*, c.*, vg.* FROM tickets t
+            INNER JOIN veiculos v ON v.id = t.veiculoId
+            INNER JOIN clientes c ON c.id = v.clienteId
+            INNER JOIN vagas vg ON vg.id = t.vagaId
+            WHERE t.id = @id
+        """";
+
+        Ticket? ticket = _connection.Query<Ticket, Veiculo, Cliente, Vaga, Ticket>(sql, (ticket, veiculo, cliente, vaga) =>
+        {
+            ticket.Veiculo = veiculo;
+            veiculo.Cliente = cliente;
+            ticket.Vaga = vaga;
+            return ticket;
+        }, new { id = id }, splitOn: "Id, Id, Id").FirstOrDefault();
+
+        if (ticket != null)
+        {
+            var valorDoMinuto = _connection.QueryFirstOrDefault<ValorDoMinuto>("SELECT * FROM valores ORDER BY id DESC LIMIT 1");
+
+            ticket.Pago(valorDoMinuto);
+            _repo.Atualizar(ticket);
+            alterarStatusVaga(ticket.VagaId, false);
+        }
+
         return Redirect("/tickets");
     }
 
